@@ -1,41 +1,28 @@
-import React,{useState,useEffect} from 'react'
+import React, { useEffect } from 'react'
 import './btn.css'
-
-
-
-function useDoubleClick(actionSimpleClick, actionDoubleClick,delay=300){
-    const [click, setClick] = useState(0);
-
-useEffect(() => {
-    const timer = setTimeout(() => {
-        // simple click
-        if (click === 1) actionSimpleClick();
-        setClick(0);
-    }, delay);
-
-    // the duration between this click and the previous one
-    // is less than the value of delay = double-click
-    if (click === 2) actionDoubleClick();
-
-    return () => clearTimeout(timer);
-    
-}, [click]);
-
-return () => setClick(prev => prev + 1);
-
-}
+import { map, buffer, debounceTime, filter } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
 
 export default function BtnComponent(props) {
+   
+    useEffect(() => {
+        console.log('here')
+        const mouse$ = fromEvent(document.getElementById('waitBtn'), 'click'
+        )
+        const doubleClick$ = mouse$.pipe(
+            buffer(mouse$.pipe(debounceTime(300))),
+            map(clicks => clicks.length),
+            filter(CL => CL >= 2)
+        ).subscribe(() => {
+            props.wait()
+        })
+        return () => {
+            doubleClick$.unsubscribe()
+        }
+    }, [props])
 
 
-    const handleWait = () =>{
-        props.wait()
-    }
-    const dontHandle = () => {
-        console.log('You clicked once')
-    }
-
-    const click = useDoubleClick(dontHandle, handleWait);
+    
     return (
         <>
             <div className="startStop">
@@ -56,9 +43,11 @@ export default function BtnComponent(props) {
             </div>
             <div className="waitReset">
                 <button
-                    onClick={click}
+                //onClick= {handleWait}
+                    id="waitBtn"
                     type="button"
                     className="btn btn-primary"
+                    
                 >
                     WAIT
                 </button>

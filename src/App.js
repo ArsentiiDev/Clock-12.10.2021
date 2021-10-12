@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import BtnComponent from "./Components/BtnComponent";
 import TimeComponent from "./Components/TimeComponent";
-import {from} from 'rxjs'
-import {filter,map} from 'rxjs/operators'
 
 function App() {
   const [timer, setTimer] = useState({
@@ -16,7 +14,6 @@ function App() {
       ...timer,
       runningSince: Date.now(),
     });
-
   };
 
   const onStopHandler = () => {
@@ -38,7 +35,7 @@ function App() {
   const onResetHandler = () => {
     const now = Date.now();
     setTimer({
-      elapsed:0,
+      elapsed: 0,
       runningSince: now,
     });
   };

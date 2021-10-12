@@ -3,20 +3,19 @@ import './time.css'
 import { renderElapsedString } from '../helpers'
 import { interval } from 'rxjs';
 
+
 const updates = interval(50)
 
 export default class TimeComponent extends React.Component {
 
-
-
     componentDidMount() {
-        this.subscription = updates.subscribe(res => this.forceUpdate()) 
+        this.subscription = updates.subscribe(res => this.forceUpdate())
     }
     componentWillUnmount() {
         this.subscription.unsubscribe()
     }
-    render() {
 
+    render() {
         const elapsedString = renderElapsedString(
             this.props.timer.elapsed,
             this.props.timer.runningSince
